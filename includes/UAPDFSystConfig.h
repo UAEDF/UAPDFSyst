@@ -51,10 +51,13 @@ class UAPDFSystConfig {
   vector<UAPDFSystAna>   SystAna    ;
 
   public:
-  UAPDFSystConfig(){ bTree = false ;}
+  UAPDFSystConfig(){ bTree = false ; InitCfg() ; }
   virtual ~UAPDFSystConfig(){;}
 
+  void InitCfg();
   void ReadCfg(string&);
+  void PrintCfg();
+  void DummyConf();
 
   void                    SetbTree( bool b)   { bTree = b            ; }
   bool                    GetbTree()          { return bTree         ; }

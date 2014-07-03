@@ -18,9 +18,189 @@ vector<string> UATokenize(string input , char token){
   return Elements;
 }
 
+//  ---------------------- InitCfg() --------------------------------
+
+void UAPDFSystConfig::InitCfg(){
+
+  InDir  = "InDir/";
+  OutDir = "OutDir/";
+
+  id1.NickName   = "id1" ;
+  id1.Expression = "1." ;
+  
+  id2.NickName   = "id2" ;
+  id2.Expression = "1." ;
+
+  x1.NickName    = "x1" ;
+  x1.Expression  = "1." ;
+
+  x2.NickName    = "x2" ;
+  x2.Expression  = "1." ;
+
+  Q.NickName     = "Q" ;
+  Q.Expression   = "1." ;
+
+  pdf1.NickName  = "pdf1" ;
+  pdf1.Expression= "1." ;
+
+  pdf2.NickName  = "pdf2" ;
+  pdf2.Expression= "1." ;
+
+  // PDF Sets
+  PDFsets.clear();
+
+  // InputData
+  InputData.clear(); 
+
+  // Lumi, Weights 
+  BaseLumi   = 1. ;
+  TargetLumi = 1. ;
+  BaseWght.NickName    = "BaseWght" ;
+  BaseWght.Expression  = "1." ;
+
+  // Selections
+  PreSel.NickName    = "PreSel";
+  PreSel.Expression  = "1." ;
+  BaseSel.NickName   = "BaseSel";
+  BaseSel.Expression = "1." ;
+
+  // PDFAna
+  SystAna.clear();
+
+}
+
 // ---------------------- ReadCfg() --------------------------------
 
 void UAPDFSystConfig::ReadCfg(string& ConFile){
+
+  ifstream Cfg ;
+  Cfg.open ( ConFile );
+
+  if(!Cfg) {
+    cout << "Cannot open input file.\n";
+    return ;
+  }
+
+  char str[5000];
+  while( Cfg ) {
+
+    Cfg.getline(str,5000);
+    if(!Cfg) continue;
+    istringstream iss(str);
+    vector<string> Elements;
+    do
+    {
+        string sub;
+        iss >> sub;
+        if(sub.size()>0) Elements.push_back(sub);
+    } while (iss);
+    if ( ! (Elements.size() > 0) ) continue;
+
+
+    // In/Out Directory
+    if ( Elements.at(0) == "InDir" ) InDir  = Elements.at(1);
+    if ( Elements.at(0) == "OutDir") OutDir = Elements.at(1); 
+
+    // Original PDF from Tree 
+    if ( Elements.at(0) == "PDFId1"   ) id1.Expression = Elements.at(1);
+    if ( Elements.at(0) == "PDFId2"   ) id2.Expression = Elements.at(1);
+    if ( Elements.at(0) == "PDFx1"    ) x1.Expression  = Elements.at(1);
+    if ( Elements.at(0) == "PDFx2"    ) x2.Expression  = Elements.at(1);
+    if ( Elements.at(0) == "QScale"   ) Q.Expression   = Elements.at(1);
+    if ( Elements.at(0) == "PDFx1PDF" ) pdf1.Expression= Elements.at(1);
+    if ( Elements.at(0) == "PDFx1PDF" ) pdf2.Expression= Elements.at(1);
+
+    // PDF Sets
+    if ( Elements.at(0) == "PDFset"   ) PDFsets.push_back(Elements.at(1));
+
+    // Input Data
+    if ( Elements.at(0) == "InputData") {
+      InputData_t Data;
+      Data.NickName = Elements.at(1) ;
+      Data.FileName = Elements.at(2) ;
+      Data.TreeName = Elements.at(3) ;
+      Data.bFixScale         = false;
+      Data.QScale.NickName   = "q-scale" ; 
+      Data.QScale.Expression = "1." ; 
+      Data.bFixPDF  = false ;
+      Data.RefPDF   = "DUMMY";
+      InputData.push_back(Data);
+    } 
+
+    // FixScale 
+    if ( Elements.at(0) == "DataFixScale" ) {
+      for ( vector<InputData_t>::iterator itData = InputData.begin() ; itData != InputData.end() ; ++itData ) {
+        if ( itData->NickName == Elements.at(1) ) {
+          itData->bFixScale = true ;
+          itData->QScale.Expression = Elements.at(2) ;  
+        }
+      }
+    }
+
+    // DataRefPDF
+    if ( Elements.at(0) == "DataRefPDF" ) {
+       for ( vector<InputData_t>::iterator itData = InputData.begin() ; itData != InputData.end() ; ++itData ) {
+        if ( itData->NickName == Elements.at(1) ) {
+          itData->bFixPDF = true ;
+          itData->RefPDF  = Elements.at(2) ; 
+        }
+      }
+    }
+
+    // Lumi, Weights 
+    if ( Elements.at(0) == "BaseLumi"   ) BaseLumi   = atof(Elements.at(1).c_str()) ;
+    if ( Elements.at(0) == "TargetLumi" ) TargetLumi = atof(Elements.at(1).c_str()) ;
+    if ( Elements.at(0) == "BaseWght" )   BaseWght.Expression   = Elements.at(1) ;
+
+    // PreSel
+    if ( Elements.at(0) == "PreSel"  ) PreSel.Expression  += "&&" + Elements.at(1) ;   
+    // BaseSel
+    if ( Elements.at(0) == "BaseSel" ) BaseSel.Expression += "&&" + Elements.at(1) ;   
+    
+    // PDFAna
+    if ( Elements.at(0) == "PDFAna" ) SystAna.push_back(UAPDFSystAna(Elements.at(1),Elements.at(2)));
+
+  }
+
+}
+
+// ---------------------- PrintCfg() --------------------------------
+
+void UAPDFSystConfig::PrintCfg(){
+
+
+  cout <<  "-------------------------------------------------" << endl ;  
+  cout <<  "PDFId1   : " << id1.Expression  << endl ;  
+  cout <<  "PDFId2   : " << id2.Expression  << endl ; 
+  cout <<  "PDFx1    : " << x1.Expression   << endl ; 
+  cout <<  "PDFx2    : " << x2.Expression   << endl ; 
+  cout <<  "QScale   : " << Q.Expression    << endl ; 
+  cout <<  "PDFx1PDF : " << pdf1.Expression << endl ; 
+  cout <<  "PDFx1PDF : " << pdf2.Expression << endl ; 
+
+//    // PDF Sets
+//    if ( Elements.at(0) == "PDFset"   ) PDFsets.push_back(Elements.at(1));
+
+  cout <<  "-------------------------------------------------" << endl ;  
+  for ( vector<InputData_t>::iterator itData = InputData.begin() ; itData != InputData.end() ; ++itData ) {
+    cout << "Data : " << itData->NickName << endl ; 
+    cout << "  --> FileName : " << itData->FileName << endl ; 
+    cout << "  --> TreeName : " << itData->TreeName << endl ;
+    cout << "  --> bFixScale: " << itData->bFixScale << " --> " << itData->QScale.Expression << endl ;
+    cout << "  --> bFixPDF  : " << itData->bFixPDF   << " --> " << itData->RefPDF  << endl ;  
+  }
+  cout <<  "-------------------------------------------------" << endl ;  
+  cout <<  "BaseLumi  : " << BaseLumi  << endl; 
+  cout <<  "TargetLumi: " << TargetLumi << endl; 
+  cout <<  "BaseWght  : " << BaseWght.Expression << endl ; 
+  cout <<  "-------------------------------------------------" << endl ; 
+  cout <<  "Presection: " << PreSel.Expression << endl ;
+  cout <<  "Selection : " << BaseSel.Expression  << endl ;
+ 
+
+}
+
+void UAPDFSystConfig::DummyConf(){
 
   //InDir  = "/Users/xjanssen/cms/HWW2012/LatinoTrees2012/R53X_S1_V08_S2_V09_S3_V13/ReducedTrees_4L_WW_MoriondeffWPuWtriggW/";
   //InDir = "/Users/xjanssen/cms/HWW2012/LatinoTrees2012/R53X_S1_V08_S2_V09_S3_V13/MC_TightTight/4L_MoriondeffWPuWtriggW/";

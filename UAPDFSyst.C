@@ -90,6 +90,7 @@ int main(int argc, char **argv) {
   // Parse the config file 
   UAPDFSystConfig Cfg ;  
   Cfg.ReadCfg(ConFile);
+  Cfg.PrintCfg();
   Cfg.SetbTree(bTree);
   Cfg.SetNMax(nMax);
 
