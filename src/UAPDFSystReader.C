@@ -59,7 +59,7 @@ void UAPDFSystReader(UAPDFSystConfig& Cfg){
       if (itD->bFixPDF) {
         if ( itD->RefPDF == *itPS ) continue;
       }
-      if ( nPDFsets >= 3 ) { cout << "[WARNING] More then 3 PDF Sets: " << *itPS << " will be skiped !" << endl ; continue ; } 
+      if ( nPDFsets >= 6 ) { cout << "[WARNING] More then 6 PDF Sets: " << *itPS << " will be skiped !" << endl ; continue ; } 
       ++nPDFsets;
       PDFName.push_back(*itPS);
       LHAPDF::initPDFSet(nPDFsets,*itPS);
