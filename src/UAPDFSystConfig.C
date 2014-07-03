@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 using namespace std;
 
 // ---------------------- TOOLS ------------------------------------
@@ -74,7 +75,7 @@ void UAPDFSystConfig::InitCfg(){
 void UAPDFSystConfig::ReadCfg(string& ConFile){
 
   ifstream Cfg ;
-  Cfg.open ( ConFile );
+  Cfg.open ( ConFile.c_str() );
 
   if(!Cfg) {
     cout << "Cannot open input file.\n";
