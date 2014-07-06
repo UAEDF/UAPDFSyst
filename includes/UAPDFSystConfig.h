@@ -49,6 +49,7 @@ class UAPDFSystConfig {
   TreeFormula_t          pdf2       ;
   vector<string>         PDFsets    ;
   vector<UAPDFSystAna>   SystAna    ;
+  vector<Plot_t>		    Plots      ;
 
   public:
   UAPDFSystConfig(){ bTree = false ; InitCfg() ; }
@@ -82,6 +83,7 @@ class UAPDFSystConfig {
   TreeFormula_t*          Getpdf2()           { return &pdf2         ; }
   vector<string>*         GetPDFsets()        { return &PDFsets      ; }
   vector<UAPDFSystAna>*   GetSystAna()        { return &SystAna      ; }
+  vector<Plot_t>*         GetPlots()		    { return &Plots        ; }
 
 };
 

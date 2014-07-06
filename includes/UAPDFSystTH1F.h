@@ -24,7 +24,9 @@ class UAPDFSystTH1F {
     unsigned int          nBins     ;
     float                 xMin      ;
     float                 xMax      ;
+	 Float_t	              *x        ;
     string                XaxisTitle;
+    string                YaxisTitle;
 
     // PDF Setup
     unsigned int          nPDFsets  ;
@@ -56,8 +58,8 @@ class UAPDFSystTH1F {
   public:
 
     // Constructor
-    UAPDFSystTH1F ()     { Formula.NickName = "NoVar" ; Formula.Expression = "0.5" ; nBins = 1 ; xMin = 0. ; xMax = 1. ; XaxisTitle = "NoVar" ; bBook = false ; bConnect = false ; bComputed = false ; }
-    UAPDFSystTH1F ( string NickName , string Expression , int nBinsIn , double xMinIn, double xMaxIn ) { Formula.NickName = NickName ; Formula.Expression = Expression ; nBins = nBinsIn  ; xMin = xMinIn ; xMax = xMaxIn ; XaxisTitle = "NoVar" ; bBook = false ; bConnect = false ; bComputed = false ; }
+    UAPDFSystTH1F ()     { Formula.NickName = "NoVar" ; Formula.Expression = "0.5" ; nBins = 1 ; xMin = 0. ; xMax = 1. ; x = new Float_t[1] ; XaxisTitle = "NoVar" ; YaxisTitle = "NoTitle" ; bBook = false ; bConnect = false ; bComputed = false ; }
+    UAPDFSystTH1F ( string NickName , string Expression , int nBinsIn , double xMinIn, double xMaxIn , Float_t *xIn = new Float_t[1] ) { Formula.NickName = NickName ; Formula.Expression = Expression ; nBins = nBinsIn  ; xMin = xMinIn ; xMax = xMaxIn ; x = xIn ; XaxisTitle = "NoVar" ; YaxisTitle = "NoTitle" ; bBook = false ; bConnect = false ; bComputed = false ; }
 
     // Destructor
     virtual ~UAPDFSystTH1F () { Reset() ; }

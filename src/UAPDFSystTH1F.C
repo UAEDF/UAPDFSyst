@@ -6,6 +6,8 @@
 #include <iostream>
 #include <iomanip>
 #include <TCanvas.h>
+#include <TDirectory.h>
+#include <TFile.h>
 using namespace std;
 
 template<typename T>
@@ -97,36 +99,76 @@ void UAPDFSystTH1F::Book ( const unsigned int nPDFsetsIn , const vector<unsigned
    string Name;
    for (  unsigned int iPDF=1 ; iPDF <= nPDFsets ; ++iPDF ) {
 
-     Name =  Formula.NickName+"_Yld_Cent_"+to_string(iPDF);
-     hYldCent.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Yld_Up_"+to_string(iPDF);
-     hYldUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Yld_Down_"+to_string(iPDF);
-     hYldDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Yld_ErrUp_"+to_string(iPDF);
-     hYldErrUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Yld_ErrDown_"+to_string(iPDF);
-     hYldErrDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+//debug//      if ( ! (xMin==-999 || xMax==-999)) printf("%40s (%15s) : %5d : (%.3f,%.3f)\n", Formula.NickName.c_str(), Formula.Expression.c_str(), nBins, xMin, xMax);
+//debug//      else {
+//debug//         printf("%40s (%15s) : %5d : {", Formula.NickName.c_str(), Formula.Expression.c_str(), nBins);
+//debug//         for (unsigned int i=0; i<nBins; i++) printf("%.3f,",x[i]);
+//debug//         printf("%.3f}\n",x[nBins]);
+//debug//      }
 
-     Name =  Formula.NickName+"_Acc_Cent_"+to_string(iPDF);
-     hAccCent.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Acc_Up_"+to_string(iPDF);
-     hAccUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Acc_Down_"+to_string(iPDF);
-     hAccDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Acc_ErrUp_"+to_string(iPDF);
-     hAccErrUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     Name =  Formula.NickName+"_Acc_ErrDown_"+to_string(iPDF);
-     hAccErrDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+      if ( ! (xMin == -999) ) {
 
-     for (unsigned int i=PDFStart.at(iPDF-1) ; i < PDFStart.at(iPDF-1)+ nweights.at(iPDF-1) ; ++i ) {
-       Name = Formula.NickName+"_All_"+to_string(i);
-       hSystAll.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-       Name = Formula.NickName+"_Sel_"+to_string(i);
-       hSystSel.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
-     }
-   } 
+        Name =  Formula.NickName+"_Yld_Cent_"+to_string(iPDF);
+        hYldCent.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Yld_Up_"+to_string(iPDF);
+        hYldUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Yld_Down_"+to_string(iPDF);
+        hYldDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Yld_ErrUp_"+to_string(iPDF);
+        hYldErrUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Yld_ErrDown_"+to_string(iPDF);
+        hYldErrDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
 
+        Name =  Formula.NickName+"_Acc_Cent_"+to_string(iPDF);
+        hAccCent.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Acc_Up_"+to_string(iPDF);
+        hAccUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Acc_Down_"+to_string(iPDF);
+        hAccDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Acc_ErrUp_"+to_string(iPDF);
+        hAccErrUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        Name =  Formula.NickName+"_Acc_ErrDown_"+to_string(iPDF);
+        hAccErrDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+
+        for (unsigned int i=PDFStart.at(iPDF-1) ; i < PDFStart.at(iPDF-1)+ nweights.at(iPDF-1) ; ++i ) {
+          Name = Formula.NickName+"_All_"+to_string(i);
+          hSystAll.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+          Name = Formula.NickName+"_Sel_"+to_string(i);
+          hSystSel.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,xMin,xMax) );
+        }
+      } 
+	
+	  else if (! (x[0] == -999) ) {
+        Name =  Formula.NickName+"_Yld_Cent_"+to_string(iPDF);
+        hYldCent.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Yld_Up_"+to_string(iPDF);
+        hYldUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Yld_Down_"+to_string(iPDF);
+        hYldDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Yld_ErrUp_"+to_string(iPDF);
+        hYldErrUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Yld_ErrDown_"+to_string(iPDF);
+        hYldErrDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+
+        Name =  Formula.NickName+"_Acc_Cent_"+to_string(iPDF);
+        hAccCent.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Acc_Up_"+to_string(iPDF);
+        hAccUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Acc_Down_"+to_string(iPDF);
+        hAccDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Acc_ErrUp_"+to_string(iPDF);
+        hAccErrUp  .push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        Name =  Formula.NickName+"_Acc_ErrDown_"+to_string(iPDF);
+        hAccErrDown.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+
+        for (unsigned int i=PDFStart.at(iPDF-1) ; i < PDFStart.at(iPDF-1)+ nweights.at(iPDF-1) ; ++i ) {
+          Name = Formula.NickName+"_All_"+to_string(i);
+          hSystAll.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+          Name = Formula.NickName+"_Sel_"+to_string(i);
+          hSystSel.push_back( new TH1F(Name.c_str(),Name.c_str(),nBins,x) );
+        }
+      } 
+	}
    // Connect
 
    Formula.MakFormula(Tree);
@@ -206,6 +248,11 @@ void UAPDFSystTH1F::Reset()
 // ----------------------Compute Syst --------------------------
 void UAPDFSystTH1F::Compute()
 {
+	TDirectory *pwd = gDirectory->CurrentDirectory();
+	TFile *histout = new TFile("histos.root","update");
+	TH1F *hpdfnames = new TH1F("pdfNames","pdfNames",100,-0.5,99.5);
+	pwd->cd();
+  
   if ( ! bBook ) return;
  
   //cout << "------- " << Formula.NickName << " -------" << endl;
@@ -369,12 +416,24 @@ void UAPDFSystTH1F::Compute()
       //                         << "\t ->ACC  : +" << 100.*wplus_acc   << " / -" << 100.*wminus_acc   << " [%]" << endl;
 
     } // END: for ( unsigned int iBin ...
+	 pwd = gDirectory->CurrentDirectory();
+	 histout->cd();
+	 hYldCent.at(iPDF-1)->Write(hYldCent.at(iPDF-1)->GetName(),TH1::kOverwrite);
+	 hYldUp.at(iPDF-1)->Write(hYldUp.at(iPDF-1)->GetName(),TH1::kOverwrite);
+	 hYldDown.at(iPDF-1)->Write(hYldDown.at(iPDF-1)->GetName(),TH1::kOverwrite);
+	 hYldErrUp.at(iPDF-1)->Write(hYldErrUp.at(iPDF-1)->GetName(),TH1::kOverwrite);
+	 hYldErrDown.at(iPDF-1)->Write(hYldErrDown.at(iPDF-1)->GetName(),TH1::kOverwrite);
+	 hpdfnames->GetXaxis()->SetBinLabel(hpdfnames->FindBin(iPDF),PDFName.at(iPDF-1).c_str());
+	 pwd->cd();
+	
+	
   } // END: for (  unsigned int iPDF=1
-
-
-
+	pwd = gDirectory->CurrentDirectory();
+	histout->cd();
+   hpdfnames->Write(hpdfnames->GetName(),TH1::kOverwrite);
+	histout->Close();
+	pwd->cd();
 }
-
 
 
 // ----------------------Print Syst --------------------------
