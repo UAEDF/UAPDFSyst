@@ -15,14 +15,17 @@ using namespace std;
 #include <TFrame.h>
 #include <TText.h>
 #include <TLatex.h>
+#include <TInterpreter.h>
 
 #include <TFile.h>
 #include <TH1F.h>
 #include <TH2F.h>
 
+#include "Progressbar.h"
 #include "src/UAPDFSystConfig.C"
 #include "src/UAPDFSystAna.C"
 #include "src/UAPDFSystTH1F.C"
+#include "src/UAPDFSystTreeMk.C"
 #include "src/UAPDFSystReader.C"
 #include "src/LatinoStyle2.C"
 
@@ -39,6 +42,9 @@ void Usage(string name){
 }
 
 int main(int argc, char **argv) {
+
+  gROOT->ProcessLine("#include <vector>"); 
+  gInterpreter->GenerateDictionary("vector<vector<Float_t> >","vector");
 
   // -------- Arguments -------
 
@@ -76,10 +82,8 @@ int main(int argc, char **argv) {
     }
     // Check arguments
     if ( nconf != 1 ) { cerr << "\n[ERROR] No or more than 1 Config !\n" ;  Usage(argv[0]) ; return 1; }
-    if ( ! (bRead||bPrint) )  
+    if ( ! (bTree||bRead) )  
                       { cerr << "\n[ERROR] No valid argument passed !\n" ;  Usage(argv[0]) ; return 1; }
-    if ( bTree && ! bRead ) 
-                      { cerr << "\n[ERROR] -t argument request -r   !\n" ;  Usage(argv[0]) ; return 1; }
   }
 
   // ROOT Style
@@ -96,8 +100,9 @@ int main(int argc, char **argv) {
   Cfg.SetNMax(nMax);
 
   // Read the Trees
-  if (bRead) UAPDFSystReader(Cfg);
-  else       { cerr << "Recreate class from Root file not available \n" ; return 1 ; }
+  if  (bTree) UAPDFSystTreeMk(Cfg);
+  // Analyse the Trees
+  if  (bRead) UAPDFSystReader(Cfg);
    
  
  

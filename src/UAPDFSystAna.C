@@ -49,7 +49,7 @@ void UAPDFSystAna::Connect( const string DataSetIn , const unsigned int nPDFsets
    // Set the bConnect flag
 
    bConnect = true ;
- 
+   cout << "[INFO] UAPDFSystAna::Connect DONE: " << NickName << endl; 
 }
 
 // ---------------------- Disconnect -----------------------------

@@ -203,6 +203,10 @@ void UAPDFSystConfig::ReadCfg(string& ConFile){
 
   }
 
+  Cfg.close();
+  Cfg.open ( ConFile.c_str() );
+ 
+
   // PDF Analysis last ! 
   while( Cfg ) {
 

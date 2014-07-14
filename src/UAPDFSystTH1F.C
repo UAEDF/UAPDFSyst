@@ -249,7 +249,7 @@ void UAPDFSystTH1F::Reset()
 void UAPDFSystTH1F::Compute()
 {
 	TDirectory *pwd = gDirectory->CurrentDirectory();
-	TFile *histout = new TFile("histos.root","update");
+	TFile *histout = new TFile("histos.root","recreate");
 	TH1F *hpdfnames = new TH1F("pdfNames","pdfNames",100,-0.5,99.5);
 	pwd->cd();
   
