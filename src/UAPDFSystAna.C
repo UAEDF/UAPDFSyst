@@ -38,8 +38,11 @@ void UAPDFSystAna::Connect( const string DataSetIn , const unsigned int nPDFsets
 //   SystTH1F.push_back(new UAPDFSystTH1F("MLP_"+DataSet+"_"+NickName,"MLP",20,0.,1.));
 //   SystTH1F.push_back(new UAPDFSystTH1F("mbb_"+DataSet+"_"+NickName,"mbb",20,60.,200.));
 
-   SystTH1F.push_back(new UAPDFSystTH1F("mll_"+DataSet+"_"+NickName,"mll",30,0.,300.));
-   SystTH1F.push_back(new UAPDFSystTH1F("mth_"+DataSet+"_"+NickName,"mth",30,0.,300.));
+  for (vector<Plot_t>::iterator iP=plots.begin(); iP!=plots.end(); ++iP) SystTH1F.push_back(new UAPDFSystTH1F(iP->Formula+"_"+DataSet+"_"+iP->NickName,iP->Formula,iP->nBins,iP->xMin,iP->xMax,iP->x));
+
+ //  SystTH1F.push_back(new UAPDFSystTH1F("mvaNOM_"+DataSet+"_"+NickName,"mvaNOM",20,-1.,1.));
+//  SystTH1F.push_back(new UAPDFSystTH1F("mll_"+DataSet+"_"+NickName,"mll",30,0.,300.));
+//   SystTH1F.push_back(new UAPDFSystTH1F("mth_"+DataSet+"_"+NickName,"mth",30,0.,300.));
    
    for ( unsigned int iH = 0 ; iH < SystTH1F.size() ; ++iH ) (SystTH1F.at(iH))->Book(nPDFsetsIn,nweightsIn,PDFNameIn,Tree); 
  

@@ -9,12 +9,12 @@
 class ProgressBar
 {
 private:
-   double Min;
-   double Max;
-   double Progress;
-   int Column;
-   int Style;
    std::ostream *Out;
+   double Max;
+   double Min;
+   int Column;
+   double Progress;
+   int Style;
    void SanityCheck();
 public:
    ProgressBar(std::ostream &out, double max = 100, double min = 0, int column = 80)

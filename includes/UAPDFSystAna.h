@@ -7,6 +7,7 @@ using namespace std;
 
 #include "TreeFormula_t.h"
 #include "UAPDFSystTH1F.h"
+#include "UAPDFSystPlot.h"
 
 class UAPDFSystAna {
 
@@ -34,11 +35,12 @@ class UAPDFSystAna {
 
     // Histograms
     vector <UAPDFSystTH1F*> SystTH1F;
+	 vector <Plot_t> plots;
   public:
     
     // Contructor
-    UAPDFSystAna()                                       { NickName = "NoSel"   ; Selection.NickName = "NoSel"   ; Selection.Expression = "1."       ; bInit = true ; bConnect = false ; }
-    UAPDFSystAna ( string sNickName , string sSelection ){ NickName = sNickName ; Selection.NickName = sNickName ; Selection.Expression = sSelection ; bInit = true ; bConnect = false ; }
+    UAPDFSystAna()                                       { NickName = "NoSel"   ; Selection.NickName = "NoSel"   ; Selection.Expression = "1."       ; bInit = true ; bConnect = false ; plots = vector<Plot_t>() ; }
+    UAPDFSystAna ( string sNickName , string sSelection , vector<Plot_t> plotsIn ){ NickName = sNickName ; Selection.NickName = sNickName ; Selection.Expression = sSelection ; bInit = true ; bConnect = false ; plots = plotsIn ; }
 
     // Destructor
     virtual ~UAPDFSystAna(){ Disconnect() ; Reset(); } 
