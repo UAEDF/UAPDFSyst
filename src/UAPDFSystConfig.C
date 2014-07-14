@@ -201,6 +201,24 @@ void UAPDFSystConfig::ReadCfg(string& ConFile){
        Plots.push_back(p);
     }
 
+  }
+
+  // PDF Analysis last ! 
+  while( Cfg ) {
+
+    Cfg.getline(str,5000);
+    if(!Cfg) continue;
+    istringstream iss(str);
+    vector<string> Elements;
+    do
+    {
+        string sub;
+        iss >> sub;
+        if(sub.size()>0) Elements.push_back(sub);
+    } while (iss);
+    if ( ! (Elements.size() > 0) ) continue;
+
+
     // PDFAna
     if ( Elements.at(0) == "PDFAna" ) SystAna.push_back(UAPDFSystAna(Elements.at(1),Elements.at(2),Plots));
 
