@@ -72,6 +72,7 @@ int main(int argc, char **argv) {
         ConFile = arg ;
         ++nconf;
       }
+
     }
     // Check arguments
     if ( nconf != 1 ) { cerr << "\n[ERROR] No or more than 1 Config !\n" ;  Usage(argv[0]) ; return 1; }

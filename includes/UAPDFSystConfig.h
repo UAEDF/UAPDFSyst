@@ -25,9 +25,17 @@ class InputData_t {
   string          RefPDF    ;
 };
 
+class PDFset_t {
+  public: 
+  string          NickName  ;
+  string          FileName  ;
+};
+
 class UAPDFSystConfig {
 
   private:
+
+  int                    NPDFMaxLoad ;
 
   bool                   bTree      ;
   int                    NMax       ;
@@ -47,7 +55,7 @@ class UAPDFSystConfig {
   TreeFormula_t          Q          ;
   TreeFormula_t          pdf1       ;
   TreeFormula_t          pdf2       ;
-  vector<string>         PDFsets    ;
+  vector<PDFset_t>       PDFsets    ;
   vector<UAPDFSystAna>   SystAna    ;
 
   public:
@@ -65,6 +73,7 @@ class UAPDFSystConfig {
   int                     GetNMax()           { return NMax          ; }   
 
   // Getters:
+  int                     GetNPDFMaxLoad()    { return NPDFMaxLoad   ; }  
   string                  GetInDir()          { return InDir         ; }
   string                  GetOutDir()         { return OutDir        ; }
   vector<InputData_t>*    GetInputData()      { return &InputData    ; }
@@ -80,7 +89,7 @@ class UAPDFSystConfig {
   TreeFormula_t*          GetQ()              { return &Q            ; }
   TreeFormula_t*          Getpdf1()           { return &pdf1         ; }
   TreeFormula_t*          Getpdf2()           { return &pdf2         ; }
-  vector<string>*         GetPDFsets()        { return &PDFsets      ; }
+  vector<PDFset_t>*       GetPDFsets()        { return &PDFsets      ; }
   vector<UAPDFSystAna>*   GetSystAna()        { return &SystAna      ; }
 
 };

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 using namespace std;
 
 // ---------------------- TOOLS ------------------------------------
@@ -21,6 +22,8 @@ vector<string> UATokenize(string input , char token){
 //  ---------------------- InitCfg() --------------------------------
 
 void UAPDFSystConfig::InitCfg(){
+
+  NPDFMaxLoad = 3   ;
 
   InDir  = "InDir/";
   OutDir = "OutDir/";
@@ -74,7 +77,7 @@ void UAPDFSystConfig::InitCfg(){
 void UAPDFSystConfig::ReadCfg(string& ConFile){
 
   ifstream Cfg ;
-  Cfg.open ( ConFile );
+  Cfg.open ( ConFile.c_str() );
 
   if(!Cfg) {
     cout << "Cannot open input file.\n";
@@ -96,6 +99,8 @@ void UAPDFSystConfig::ReadCfg(string& ConFile){
     } while (iss);
     if ( ! (Elements.size() > 0) ) continue;
 
+    // Maximum # PDF sets that can be loaded at same time in LHPDF library
+    if ( Elements.at(0) == "NPDFMaxLoad" ) NPDFMaxLoad = atoi(Elements.at(1).c_str()) ;
 
     // In/Out Directory
     if ( Elements.at(0) == "InDir" ) InDir  = Elements.at(1);
@@ -111,7 +116,14 @@ void UAPDFSystConfig::ReadCfg(string& ConFile){
     if ( Elements.at(0) == "PDFx1PDF" ) pdf2.Expression= Elements.at(1);
 
     // PDF Sets
-    if ( Elements.at(0) == "PDFset"   ) PDFsets.push_back(Elements.at(1));
+    if ( Elements.at(0) == "PDFset"   ) {
+      PDFset_t PDFset ;
+      PDFset.NickName = Elements.at(1);
+      PDFset.FileName = Elements.at(2);
+
+      PDFsets.push_back(PDFset);
+    }
+
 
     // Input Data
     if ( Elements.at(0) == "InputData") {
@@ -168,7 +180,8 @@ void UAPDFSystConfig::ReadCfg(string& ConFile){
 
 void UAPDFSystConfig::PrintCfg(){
 
-
+  cout <<  "-------------------------------------------------" << endl ;  
+  cout <<  "NPDFMaxLoad: " << NPDFMaxLoad << endl ;  
   cout <<  "-------------------------------------------------" << endl ;  
   cout <<  "PDFId1   : " << id1.Expression  << endl ;  
   cout <<  "PDFId2   : " << id2.Expression  << endl ; 
@@ -303,9 +316,9 @@ void UAPDFSystConfig::DummyConf(){
   pdf2.Expression= "pdfx2PDF" ;
 
 //  PDFsets.push_back("cteq66.LHgrid");
-  PDFsets.push_back("CT10nlo.LHgrid");
-  PDFsets.push_back("MSTW2008nlo68cl.LHgrid");
-  PDFsets.push_back("NNPDF23_nlo_as_0118.LHgrid");
+//  PDFsets.push_back("CT10nlo.LHgrid");
+//  PDFsets.push_back("MSTW2008nlo68cl.LHgrid");
+//  PDFsets.push_back("NNPDF23_nlo_as_0118.LHgrid");
 
   SystAna.push_back(UAPDFSystAna("WWsel","1."));
   SystAna.push_back(UAPDFSystAna("all_0jet","njet==0"));
