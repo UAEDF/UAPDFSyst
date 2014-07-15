@@ -123,7 +123,14 @@ void UAPDFSystConfig::ReadCfg(string& ConFile){
       PDFset_t PDFset ;
       PDFset.NickName = Elements.at(1);
       PDFset.FileName = Elements.at(2);
-
+      if ( Elements.size() > 3 ) PDFset.Purpose = Elements.at(3);
+      else                       PDFset.Purpose = "eigenV" ;  
+      (PDFset.Members).clear() ; 
+      if ( Elements.size() > 4 ) { 
+                                   vector<string> vM = UATokenize( Elements.at(4) , ':' ) ; 
+                                   for (vector<string>::iterator iM = vM.begin() ; iM != vM.end() ; ++iM ) (PDFset.Members).push_back(atoi((*iM).c_str())) ; 
+                                 }
+      else                       (PDFset.Members).push_back(-1) ;
       PDFsets.push_back(PDFset);
     }
 

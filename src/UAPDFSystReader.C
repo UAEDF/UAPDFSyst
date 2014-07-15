@@ -85,6 +85,9 @@ void UAPDFSystReader(UAPDFSystConfig& Cfg){
     TH1F* hx2  = new TH1F("hx2" ,"hx2" , 40, 0.,0.8 ); 
     TH2F* hx12 = new TH2F("hx12","hx12", 40, 0.,0.8 , 40, 0.,0.8 );
     TH2F* hid  = new TH2F("hid" ,"hid" ,13 ,-7,7,13,-7,7);
+    TH1F* hpdfnames = new TH1F("pdfNames","pdfNames",100,-0.5,99.5);
+    for ( int iPDF = 1 ; iPDF <= nPDFsets ; ++iPDF ) hpdfnames->GetXaxis()->SetBinLabel(hpdfnames->FindBin(iPDF),PDFName.at(iPDF-1).c_str());
+
 
     // ------------- Connect Analysis ----------------
 
@@ -162,7 +165,7 @@ void UAPDFSystReader(UAPDFSystConfig& Cfg){
       for (  unsigned int iPDF=0 ; iPDF < nPDFsets ; ++iPDF ) {
         for (unsigned int i=0; i<nweights.at(iPDF); ++i) {
 
-           double pdfwght = weight_pdf[iPDF]->at(i) ;
+           double pdfwght = weight_pdf[iPDF]->at(i) * alphas_pdf[iPDF]->at(i);
            for ( vector<UAPDFSystAna>::iterator itSA = (Cfg.GetSystAna())->begin() ; itSA != (Cfg.GetSystAna())->end() ; ++itSA) itSA->Fill(iPDF+1,i,bBaseSel,Wght*pdfwght);
 
         }
@@ -217,11 +220,19 @@ void UAPDFSystReader(UAPDFSystConfig& Cfg){
     hx1->Write();
     hx2->Write();
     hx12->Write();    
+    hpdfnames->Write();
     FHout->Close(); 
     delete FHout;
 
     // ------------ Reset Analysis --------------------
-
+/*
+    delete hQ ;
+    delete hid ;
+    delete hx1 ;
+    delete hx2 ;
+    delete hx12 ;
+    delete hpdfnames ;
+*/
     for ( vector<UAPDFSystAna>::iterator itSA = (Cfg.GetSystAna())->begin() ; itSA != (Cfg.GetSystAna())->end() ; ++itSA) itSA->Reset();
 
   } // End: Loop on InputData ------------

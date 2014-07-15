@@ -38,7 +38,7 @@ void UAPDFSystAna::Connect( const string DataSetIn , const unsigned int nPDFsets
 //   SystTH1F.push_back(new UAPDFSystTH1F("MLP_"+DataSet+"_"+NickName,"MLP",20,0.,1.));
 //   SystTH1F.push_back(new UAPDFSystTH1F("mbb_"+DataSet+"_"+NickName,"mbb",20,60.,200.));
 
-  for (vector<Plot_t>::iterator iP=plots.begin(); iP!=plots.end(); ++iP) SystTH1F.push_back(new UAPDFSystTH1F(iP->Formula+"_"+DataSet+"_"+iP->NickName,iP->Formula,iP->nBins,iP->xMin,iP->xMax,iP->x));
+   for (vector<Plot_t>::iterator iP=plots.begin(); iP!=plots.end(); ++iP) SystTH1F.push_back(new UAPDFSystTH1F(iP->NickName+"_"+DataSet+"_"+NickName,iP->Formula,iP->nBins,iP->xMin,iP->xMax,iP->x));
 
  //  SystTH1F.push_back(new UAPDFSystTH1F("mvaNOM_"+DataSet+"_"+NickName,"mvaNOM",20,-1.,1.));
 //  SystTH1F.push_back(new UAPDFSystTH1F("mll_"+DataSet+"_"+NickName,"mll",30,0.,300.));

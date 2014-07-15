@@ -248,10 +248,6 @@ void UAPDFSystTH1F::Reset()
 // ----------------------Compute Syst --------------------------
 void UAPDFSystTH1F::Compute()
 {
-	TDirectory *pwd = gDirectory->CurrentDirectory();
-	TFile *histout = new TFile("histos.root","recreate");
-	TH1F *hpdfnames = new TH1F("pdfNames","pdfNames",100,-0.5,99.5);
-	pwd->cd();
   
   if ( ! bBook ) return;
  
@@ -416,23 +412,8 @@ void UAPDFSystTH1F::Compute()
       //                         << "\t ->ACC  : +" << 100.*wplus_acc   << " / -" << 100.*wminus_acc   << " [%]" << endl;
 
     } // END: for ( unsigned int iBin ...
-	 pwd = gDirectory->CurrentDirectory();
-	 histout->cd();
-	 hYldCent.at(iPDF-1)->Write(hYldCent.at(iPDF-1)->GetName(),TH1::kOverwrite);
-	 hYldUp.at(iPDF-1)->Write(hYldUp.at(iPDF-1)->GetName(),TH1::kOverwrite);
-	 hYldDown.at(iPDF-1)->Write(hYldDown.at(iPDF-1)->GetName(),TH1::kOverwrite);
-	 hYldErrUp.at(iPDF-1)->Write(hYldErrUp.at(iPDF-1)->GetName(),TH1::kOverwrite);
-	 hYldErrDown.at(iPDF-1)->Write(hYldErrDown.at(iPDF-1)->GetName(),TH1::kOverwrite);
-	 hpdfnames->GetXaxis()->SetBinLabel(hpdfnames->FindBin(iPDF),PDFName.at(iPDF-1).c_str());
-	 pwd->cd();
-	
 	
   } // END: for (  unsigned int iPDF=1
-	pwd = gDirectory->CurrentDirectory();
-	histout->cd();
-   hpdfnames->Write(hpdfnames->GetName(),TH1::kOverwrite);
-	histout->Close();
-	pwd->cd();
 }
 
 

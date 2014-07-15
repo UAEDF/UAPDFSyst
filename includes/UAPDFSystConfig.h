@@ -29,6 +29,8 @@ class PDFset_t {
   public: 
   string          NickName  ;
   string          FileName  ;
+  string          Purpose   ;
+  vector<int>     Members   ;
 };
 
 class UAPDFSystConfig {

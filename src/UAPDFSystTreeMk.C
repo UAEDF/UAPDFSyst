@@ -59,8 +59,13 @@ void UAPDFSystTreeMk(UAPDFSystConfig& Cfg){
        ++nPDFOpen; 
        PDFName.push_back(itD->RefPDF);
        LHAPDF::initPDFSet(nPDFOpen,itD->RefPDF);  
-       nweights.push_back(1);  
-       nweights.at(nPDFsets-1) += LHAPDF::numberPDF(nPDFOpen);
+       if ( (((Cfg.GetPDFsets())->at(0)).Members).at(0) != -1 ) nweights.push_back( (((Cfg.GetPDFsets())->at(0)).Members).size() ) ;
+       else { 
+         nweights.push_back(1);  
+         nweights.at(nPDFsets-1) += LHAPDF::numberPDF(nPDFOpen);
+       }
+       //cout <<  nweights.at(nPDFsets-1) << endl ;
+
        nweightsLocal.at(nPDFOpen-1) = nweights.at(nPDFsets-1) ;
        weight_pdf1->clear();
        weight_pdf1->resize(nweights.at(0),0.);
@@ -143,10 +148,13 @@ void UAPDFSystTreeMk(UAPDFSystConfig& Cfg){
         } 
         else {                          
           LHAPDF::initPDFSet(nPDFOpen, ((Cfg.GetPDFsets())->at(iPDFSet)).FileName ) ;
-          nweights.push_back(1);  
-          cout << LHAPDF::numberPDF(nPDFOpen) << endl; 
-          nweights.at(nPDFsets-1) += LHAPDF::numberPDF(nPDFOpen);
+          if ( (((Cfg.GetPDFsets())->at(nPDFsets-1)).Members).at(0) != -1 ) nweights.push_back( (((Cfg.GetPDFsets())->at(nPDFsets-1)).Members).size() ) ;
+          else {
+            nweights.push_back(1);  
+            nweights.at(nPDFsets-1) += LHAPDF::numberPDF(nPDFOpen);
+          }
           nweightsLocal.at(nPDFOpen-1) = nweights.at(nPDFsets-1) ;
+          //cout <<  nweights.at(nPDFsets-1) << " = " << nweightsLocal.at(nPDFOpen-1) << endl ;
 
           weight_pdf.push_back( new vector<Float_t> ) ; 
           (weight_pdf.at(nPDFsets-1))->clear();
@@ -227,28 +235,36 @@ void UAPDFSystTreeMk(UAPDFSystConfig& Cfg){
 
         // ----------- Fix PDF --------------------------
   
+        LHAPDF::usePDFMember(1,0);
         if ( itD->bFixPDF ) {
-          LHAPDF::usePDFMember(1,0);
           pdf1 = LHAPDF::xfx(1, x1, Q, id1)/x1;
           pdf2 = LHAPDF::xfx(1, x2, Q, id2)/x2;
         }      
+        double alphas = LHAPDF::alphasPDF (1, Q);
 
         // ----------- PDF Weights ----------------------
   
         for (  unsigned int iPDF=1 ; iPDF <= nPDFOpen ; ++iPDF ) {
+          int iPDFTrue = (iPDFBlock-1)*Cfg.GetNPDFMaxLoad()+iPDF ;
+          if ( itD->bFixPDF ) iPDFTrue -= iPDFBlock-1 ;
+          if ( itD->bFixPDF && iPDF == 1 ) iPDFTrue = 1 ;
+          //cout << iPDFBlock << " , " << iPDF << " --> " << iPDFTrue << endl ;
+
           for (unsigned int i=0; i<nweightsLocal.at(iPDF-1); ++i) {
-        
-            LHAPDF::usePDFMember(iPDF,i);
-            double newpdf1 = LHAPDF::xfx(iPDF, x1, Q, id1)/x1;
-            double newpdf2 = LHAPDF::xfx(iPDF, x2, Q, id2)/x2;
-            double pdfwght = newpdf1/pdf1*newpdf2/pdf2 ;
+            int j = i;
+            if   ( (((Cfg.GetPDFsets())->at(iPDFTrue-1)).Members).at(0) != -1 ) j = (((Cfg.GetPDFsets())->at(iPDFTrue-1)).Members).at(i) ;
+            //cout << i << " " << j << endl;
+            LHAPDF::usePDFMember(iPDF,j);
+            double newpdf1   = LHAPDF::xfx(iPDF, x1, Q, id1)/x1;
+            double newpdf2   = LHAPDF::xfx(iPDF, x2, Q, id2)/x2;
+            double newalphas = LHAPDF::alphasPDF (iPDF, Q);
+            double pdfwght   = newpdf1/pdf1*newpdf2/pdf2 ;
             if ( iPDF == 1 ) weight_pdf1->at(i) = pdfwght ;
             if ( iPDF == 2 ) weight_pdf2->at(i) = pdfwght ;
             if ( iPDF == 3 ) weight_pdf3->at(i) = pdfwght ;
-            if ( iPDF == 1 ) alphas_pdf1->at(i) = LHAPDF::alphasPDF (iPDF, Q);
-            if ( iPDF == 2 ) alphas_pdf2->at(i) = LHAPDF::alphasPDF (iPDF, Q);
-            if ( iPDF == 3 ) alphas_pdf3->at(i) = LHAPDF::alphasPDF (iPDF, Q);
-
+            if ( iPDF == 1 ) alphas_pdf1->at(i) = newalphas/alphas;
+            if ( iPDF == 2 ) alphas_pdf2->at(i) = newalphas/alphas;
+            if ( iPDF == 3 ) alphas_pdf3->at(i) = newalphas/alphas;
           }
         }
 
