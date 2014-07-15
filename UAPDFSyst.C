@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
   bool    bRead    = false;
   bool    bTree    = false;
   bool    bPrint   = false;
-  int     nMax     = 0;
+  int     nMax     = -1;
 
   if ( argc < 2 ) /* At least 1 argument */
   {

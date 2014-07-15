@@ -182,11 +182,11 @@ void UAPDFSystConfig::ReadCfg(string& ConFile){
        p.kLogY    = atoi(Elements.at(5).c_str());
        p.nBins      = atoi(Elements.at(6).c_str());
        string ref="-";
-       if ( ! ref.compare(Elements.at(7)) == 0 ) p.xMin       = atof(Elements.at(7).c_str());
+       if ( ! (ref.compare(Elements.at(7)) == 0) ) p.xMin       = atof(Elements.at(7).c_str());
        else                                      p.xMin       = -999;
-       if ( ! ref.compare(Elements.at(8)) == 0 ) p.xMax       = atof(Elements.at(8).c_str());
+       if ( ! (ref.compare(Elements.at(8)) == 0) ) p.xMax       = atof(Elements.at(8).c_str());
        else                                      p.xMax       = -999;
-       if ( ! ref.compare(Elements.at(9)) == 0 ) {
+       if ( ! (ref.compare(Elements.at(9)) == 0) ) {
           char token = ',';
           vector<string> subElements = UATokenize(Elements.at(9),token);
           p.x = new Float_t[p.nBins];

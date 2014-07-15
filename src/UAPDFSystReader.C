@@ -220,7 +220,9 @@ void UAPDFSystReader(UAPDFSystConfig& Cfg){
     FHout->Close(); 
     delete FHout;
 
+    // ------------ Reset Analysis --------------------
 
+    for ( vector<UAPDFSystAna>::iterator itSA = (Cfg.GetSystAna())->begin() ; itSA != (Cfg.GetSystAna())->end() ; ++itSA) itSA->Reset();
 
   } // End: Loop on InputData ------------
 
